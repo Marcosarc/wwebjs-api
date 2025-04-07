@@ -2,20 +2,18 @@ version: '3.8'
 
 services:
   wwebjs-api:
-    build: https://github.com/Marcosarc/wwebjs-api.git  # Construir desde tu repo
-    container_name: wwebjs_api
-    restart: unless-stopped
+    image: avoylenko/wwebjs-api:latest  # Imagen oficial del autor
+    deploy:
+      restart_policy:
+        condition: on-failure
     networks:
       - panelnet
     environment:
-      - PORT=3000
-      - SESSION_NAME=production_session
-      - LOG_LEVEL=debug
-      - API_KEY=8a7dc96763ed02f4bd3f86cfd8a6ad68
-      - ENABLE_SWAGGER=true
+      - BASE_WEBHOOK_URL=https://wwebjs2.srvapp2.site
+      - API_KEY=8a7dc96763ed02f4bd3f86cfd8a6ad68  # Tu clave aquí
       - PUPPETEER_SKIP_CHROMIUM_DOWNLOAD=true
     volumes:
-      - wwebjs-sessions:/app/sessions  # Ajusta según tu Dockerfile
+      - wwebjs-sessions:/usr/src/app/sessions
     labels:
       - "traefik.enable=true"
       - "traefik.docker.network=panelnet"
