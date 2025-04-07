@@ -1,34 +1,34 @@
 version: '3.8'
 
 services:
-  app:
-    container_name: wwebjs_api
+  wwebjs-api:
     image: avoylenko/wwebjs-api:latest
+    container_name: wwebjs_api
     restart: always
+    networks:
+      - panelnet
     environment:
-      - BASE_WEBHOOK_URL=https://wwebjs2.srvapp2.site
-      - API_KEY=8a7dc96763ed02f4bd3f86cfd8a6ad68
+      - BASE_WEBHOOK_URL=https://wwebjs2.srvapp2.site  # Usar tu dominio real
+      - API_KEY=8a7dc96763ed02f4bd3f86cfd8a6ad68  # Cambiar por tu clave segura
+      - ENABLE_SWAGGER_ENDPOINT=TRUE
       - MAX_ATTACHMENT_SIZE=5000000
       - SET_MESSAGES_AS_SEEN=TRUE
       - DISABLED_CALLBACKS=message_ack|message_reaction
-      - ENABLE_SWAGGER_ENDPOINT=TRUE
+      - PUPPETEER_SKIP_CHROMIUM_DOWNLOAD=true  # Previene problemas de instalación
     volumes:
-      - wwebjs-sessions:/usr/src/app/sessions
-    deploy:
-      mode: replicated
-      replicas: 1
-      labels:
-        - traefik.enable=true
-        - traefik.http.routers.wwebjs.rule=Host(`wwebjs2.srvapp2.site`)
-        - traefik.http.routers.wwebjs.entrypoints=websecure
-        - traefik.http.routers.wwebjs.tls.certresolver=letsencryptresolver
-        - traefik.http.services.wwebjs.loadbalancer.server.port=3000
-    networks:
-      - panelnet
+      - wwebjs-sessions:/usr/src/app/sessions  # Usar misma ruta que en la imagen
+    labels:
+      - "traefik.enable=true"
+      - "traefik.docker.network=panelnet"
+      - "traefik.http.routers.wwebjs-api.rule=Host(`wwebjs2.srvapp2.site`)"
+      - "traefik.http.routers.wwebjs-api.entrypoints=websecure"
+      - "traefik.http.routers.wwebjs-api.tls.certresolver=letsencrypt"
+      - "traefik.http.services.wwebjs-api.loadbalancer.server.port=3000"
+      - "traefik.http.routers.wwebjs-api.middlewares=compresion@file"  # Si tienes middleware configurado
 
 volumes:
   wwebjs-sessions:
-    external: true
+    external: true  # Asegúrate de crear el volumen primero
 
 networks:
   panelnet:
