@@ -11,7 +11,7 @@ services:
       - PORT=3000
       - SESSION_NAME=production_session
       - LOG_LEVEL=debug
-      - API_KEY=tu_clave_secreta_generada  # ¡Obligatorio cambiar!
+      - API_KEY=8a7dc96763ed02f4bd3f86cfd8a6ad68
       - ENABLE_SWAGGER=true
       - PUPPETEER_SKIP_CHROMIUM_DOWNLOAD=true
     volumes:
