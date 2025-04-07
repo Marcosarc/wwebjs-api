@@ -2,21 +2,20 @@ version: '3.8'
 
 services:
   wwebjs-api:
-    image: avoylenko/wwebjs-api:latest
+    build: https://github.com/Marcosarc/wwebjs-api.git  # Construir desde tu repo
     container_name: wwebjs_api
-    restart: always
+    restart: unless-stopped
     networks:
       - panelnet
     environment:
-      - BASE_WEBHOOK_URL=https://wwebjs2.srvapp2.site  # Usar tu dominio real
-      - API_KEY=8a7dc96763ed02f4bd3f86cfd8a6ad68  # Cambiar por tu clave segura
-      - ENABLE_SWAGGER_ENDPOINT=TRUE
-      - MAX_ATTACHMENT_SIZE=5000000
-      - SET_MESSAGES_AS_SEEN=TRUE
-      - DISABLED_CALLBACKS=message_ack|message_reaction
-      - PUPPETEER_SKIP_CHROMIUM_DOWNLOAD=true  # Previene problemas de instalación
+      - PORT=3000
+      - SESSION_NAME=production_session
+      - LOG_LEVEL=debug
+      - API_KEY=tu_clave_secreta_generada  # ¡Obligatorio cambiar!
+      - ENABLE_SWAGGER=true
+      - PUPPETEER_SKIP_CHROMIUM_DOWNLOAD=true
     volumes:
-      - wwebjs-sessions:/usr/src/app/sessions  # Usar misma ruta que en la imagen
+      - wwebjs-sessions:/app/sessions  # Ajusta según tu Dockerfile
     labels:
       - "traefik.enable=true"
       - "traefik.docker.network=panelnet"
@@ -24,11 +23,10 @@ services:
       - "traefik.http.routers.wwebjs-api.entrypoints=websecure"
       - "traefik.http.routers.wwebjs-api.tls.certresolver=letsencrypt"
       - "traefik.http.services.wwebjs-api.loadbalancer.server.port=3000"
-      - "traefik.http.routers.wwebjs-api.middlewares=compresion@file"  # Si tienes middleware configurado
 
 volumes:
   wwebjs-sessions:
-    external: true  # Asegúrate de crear el volumen primero
+    external: true
 
 networks:
   panelnet:
