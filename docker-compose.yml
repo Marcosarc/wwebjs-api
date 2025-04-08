@@ -2,7 +2,7 @@ version: '3.8'
 services:
   wwebjs-api:
     build:
-      context: https://github.com/tu-usuario/tu-repositorio.git#rama  # Reemplaza con la URL de tu repositorio
+      context: https://github.com/Marcosarc/wwebjs-api.git#main  # Reemplaza con la URL de tu repositorio
     deploy:
       restart_policy:
         condition: on-failure
