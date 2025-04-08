@@ -1,31 +1,29 @@
 version: '3.8'
-
 services:
   wwebjs-api:
-    image: avoylenko/wwebjs-api:latest  # Imagen oficial del autor
+    build:
+      context: https://github.com/tu-usuario/tu-repositorio.git#rama  # Reemplaza con la URL de tu repositorio
     deploy:
       restart_policy:
         condition: on-failure
     networks:
       - panelnet
     environment:
-      - BASE_WEBHOOK_URL=https://wwebjs2.srvapp2.site
-      - API_KEY=8a7dc96763ed02f4bd3f86cfd8a6ad68  # Tu clave aquí
+      - BASE_WEBHOOK_URL=https://wwebjs.srvapp2.site
+      - API_KEY=8a7dc96763ed02f4bd3f86cfd8a6ad68
       - PUPPETEER_SKIP_CHROMIUM_DOWNLOAD=true
     volumes:
       - wwebjs-sessions:/usr/src/app/sessions
     labels:
       - "traefik.enable=true"
       - "traefik.docker.network=panelnet"
-      - "traefik.http.routers.wwebjs-api.rule=Host(`wwebjs2.srvapp2.site`)"
+      - "traefik.http.routers.wwebjs-api.rule=Host(`wwebjs.srvapp2.site`)"
       - "traefik.http.routers.wwebjs-api.entrypoints=websecure"
       - "traefik.http.routers.wwebjs-api.tls.certresolver=letsencrypt"
       - "traefik.http.services.wwebjs-api.loadbalancer.server.port=3000"
-
 volumes:
   wwebjs-sessions:
     external: true
-
 networks:
   panelnet:
     external: true
